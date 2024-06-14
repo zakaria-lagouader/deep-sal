@@ -22,6 +22,7 @@ for modelName in trainSet:
 
     gtdata=np.loadtxt(rootdir + modelsDir + modelName +'.txt', delimiter=',')
 
+    saliencyValues = []
     # #saliencyValue=saliencyValue/np.max(saliencyValue)
     print('Saliency ground truth data')
     if type == 'continuous':
