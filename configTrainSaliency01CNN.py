@@ -2,7 +2,7 @@ import numpy as np
 import glob
 import os
 import hilbertcurve.hilbertcurve.hilbertcurve as hb
-rootdir = './'
+rootdir = '/kaggle/working/'
 modelsDir='data/'
 sessionsDir='models/'
 
