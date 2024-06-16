@@ -105,6 +105,8 @@ if type == 'discrete':
     label_test=to_categorical(Y_test,num_classes=num_classes)
     saliency_model.compile(loss='categorical_crossentropy', optimizer='adam',metrics=['accuracy'])
 
-saliency_model.summary()
-saliency_model_train = saliency_model.fit(x=data_train, y=label_train, batch_size=batch_size, epochs=numEpochs, verbose=1)
-saliency_model.save( rootdir+sessionsDir + keyTrain +'.h5')
+print(data_test.shape, label_train.shape)
+
+# saliency_model.summary()
+# saliency_model_train = saliency_model.fit(x=data_train, y=label_train, batch_size=batch_size, epochs=numEpochs, verbose=1)
+# saliency_model.save( rootdir+sessionsDir + keyTrain +'.h5')
