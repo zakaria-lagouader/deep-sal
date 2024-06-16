@@ -6,7 +6,7 @@ import os
 saliency_model=CNNmodelKeras(img_size,num_channels,num_classes,type)
 train_data=[]
 train_labels=[]
-trainSet = [os.path.splitext(os.path.basename(file))[0] for file in glob.glob(rootdir + modelsDir + "*.obj")][:2]
+trainSet = [os.path.splitext(os.path.basename(file))[0] for file in glob.glob(rootdir + modelsDir + "*.obj")]
 print(trainSet)
 for modelName in trainSet:
     # ======Model information=====================================================================
@@ -65,7 +65,8 @@ for modelName in trainSet:
         patches = [neighboursByVertex(mModel, i, numOfElements)[0] for i in range(0, len(mModel.vertices))]
         # patches = np.random.choice(patches, numOfElements, replace=False)
         for i, p in enumerate(patches):
-            print(f"{i}%" if i % 1000 == 0 else "", end="")
+            if i % 1000 == 0:
+                print(f"{i /100}%")
             patchVerticesOriginal = [mModel.vertices[i] for i in p]
             normalsPatchVerticesOriginal = np.asarray([pF.normal for pF in patchVerticesOriginal])
             vec = np.mean(np.asarray([fnm.normal for fnm in patchVerticesOriginal]), axis=0)
