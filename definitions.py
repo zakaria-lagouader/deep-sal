@@ -1,5 +1,6 @@
 import tensorflow as tf
-tf.compat.v1.disable_eager_execution()
+tf.config.run_functions_eagerly(True)
+tf.data.experimental.enable_debug_mode()
 import numpy as np
 from numpy import genfromtxt
 import random
@@ -37,6 +38,3 @@ def get_session(gpu_fraction=0.333):
         per_process_gpu_memory_fraction=gpu_fraction,
         allow_growth=True)
     return tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
-
-tf.config.run_functions_eagerly(True)
-tf.data.experimental.enable_debug_mode()
