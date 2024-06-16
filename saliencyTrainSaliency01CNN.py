@@ -6,6 +6,7 @@ saliency_model=CNNmodelKeras(img_size,num_channels,num_classes,type)
 train_data=[]
 train_labels=[]
 trainSet=glob.glob(rootdir + modelsDir + "*.obj")
+print(trainSet)
 for modelName in trainSet:
     # ======Model information=====================================================================
     mModelSrc = rootdir + modelsDir + modelName + '.obj'

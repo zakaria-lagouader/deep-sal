@@ -2,7 +2,7 @@ import numpy as np
 import glob
 import os
 import hilbertcurve.hilbertcurve.hilbertcurve as hb
-rootdir = '/kaggle/working/deep-sal'
+rootdir = '/kaggle/working/deep-sal/'
 modelsDir='data/'
 sessionsDir='models/'
 
