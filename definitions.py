@@ -39,3 +39,4 @@ def get_session(gpu_fraction=0.333):
     return tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
 
 tf.config.run_functions_eagerly(True)
+tf.data.experimental.enable_debug_mode()
