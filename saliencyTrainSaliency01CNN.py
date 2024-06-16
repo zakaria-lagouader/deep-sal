@@ -22,11 +22,10 @@ for modelName in trainSet:
 
     gtdata=np.loadtxt(rootdir + modelsDir + modelName +'.txt', delimiter=',')
 
-    saliencyValues = []
     # #saliencyValue=saliencyValue/np.max(saliencyValue)
     print('Saliency ground truth data')
     if type == 'continuous':
-        saliencyValues=gtdata.tolist()
+        train_labels += gtdata.tolist()
     if type == 'discrete':
         saliencyValues=[]
         for s in gtdata.tolist():
@@ -82,7 +81,7 @@ for modelName in trainSet:
 if type == 'continuous':
     seppoint = int(0.9 * np.shape(train_data)[0])
     train_data = np.asarray(train_data)
-    train_labels = np.asarray([np.asarray(saliencyValues)]).transpose()
+    train_labels = np.asarray(train_labels)
     X=train_data[:seppoint]
     X_test=train_data[seppoint:]
     Y=np.asarray(saliencyValues[:seppoint])
