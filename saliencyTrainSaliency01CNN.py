@@ -84,8 +84,8 @@ if type == 'continuous':
     train_labels = np.asarray(train_labels)
     X=train_data[:seppoint]
     X_test=train_data[seppoint:]
-    Y=np.asarray(saliencyValues[:seppoint])
-    Y_test = np.asarray(saliencyValues[seppoint:])
+    Y=np.asarray(train_labels[:seppoint])
+    Y_test = np.asarray(train_labels[seppoint:])
     data_train= X
     data_test = X_test
     label_train=Y
