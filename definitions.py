@@ -37,3 +37,5 @@ def get_session(gpu_fraction=0.333):
         per_process_gpu_memory_fraction=gpu_fraction,
         allow_growth=True)
     return tf.Session(config=tf.ConfigProto(gpu_options=gpu_options))
+
+tf.config.run_functions_eagerly(True)
