@@ -65,7 +65,7 @@ for modelName in trainSet:
         patches = [neighboursByVertex(mModel, i, numOfElements)[0] for i in range(0, len(mModel.vertices))]
         # patches = np.random.choice(patches, numOfElements, replace=False)
         for i, p in enumerate(patches):
-            print(i)
+            print(f"{i}%" if i % 1000 == 0 else "", end="")
             patchVerticesOriginal = [mModel.vertices[i] for i in p]
             normalsPatchVerticesOriginal = np.asarray([pF.normal for pF in patchVerticesOriginal])
             vec = np.mean(np.asarray([fnm.normal for fnm in patchVerticesOriginal]), axis=0)
