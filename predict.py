@@ -3,8 +3,8 @@ from definitions import *
 from configTrainSaliency01CNN import *
 import trimesh
 
-saliency_model = tf.keras.models.load_model("models/model-40.h5")
-mesh_name = "data/bimba_decimated.obj"
+mesh_name = "data/skull_decimated.obj"
+saliency_model = tf.keras.models.load_model("models/model.h5")
 mModel = loadObj(mesh_name)
 updateGeometryAttibutes(mModel, useGuided=useGuided, numOfFacesForGuided=patchSizeGuided, computeDeltas=False,
                         computeAdjacency=False, computeVertexNormals=False)
