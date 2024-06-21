@@ -6,7 +6,7 @@ import os
 saliency_model=CNNmodelKeras(img_size,num_channels,num_classes,type)
 train_data=[]
 train_labels=[]
-trainSet = [os.path.splitext(os.path.basename(file))[0] for file in glob.glob(rootdir + modelsDir + "*.obj")][:20]
+trainSet = [os.path.splitext(os.path.basename(file))[0] for file in glob.glob(rootdir + modelsDir + "*.obj")][:10]
 print(trainSet)
 for modelName in trainSet:
     # ======Model information=====================================================================
@@ -29,11 +29,7 @@ for modelName in trainSet:
     if type == 'continuous':
         train_labels += gtdata.tolist()
     if type == 'discrete':
-        saliencyValues=[]
-        for s in gtdata.tolist():
-            v = int((num_classes - 1) * s)
-            saliencyValues.append(v)
-
+        train_labels += [int((num_classes - 1) * s) for s in gtdata.tolist()]
 
 
     if mode == "MESH":
@@ -83,9 +79,9 @@ for modelName in trainSet:
 
 # Dataset and labels summarization ========================================================================
 if type == 'continuous':
-    seppoint = int(0.9 * np.shape(train_data)[0])
     train_data = np.asarray(train_data)
     train_labels = np.asarray(train_labels)
+    # seppoint = int(0.9 * np.shape(train_data)[0])
     # X=train_data[:seppoint]
     # X_test=train_data[seppoint:]
     # Y=np.asarray(train_labels[:seppoint])
@@ -96,21 +92,24 @@ if type == 'continuous':
     # label_test=Y_test
     saliency_model.compile(loss=tf.keras.losses.MeanSquaredError(), optimizer='adam', metrics=[tf.keras.metrics.RootMeanSquaredError()])
 
-# if type == 'discrete':
-#     seppoint = int(0.9 * np.shape(train_data)[0])
-#     train_data = np.asarray(train_data)
-#     X=train_data[:seppoint]
-#     X_test=train_data[seppoint:]
-#     Y=saliencyValues[:seppoint]
-#     Y_test = saliencyValues[seppoint:]
-#     data_train= X
-#     data_test = X_test
-#     label_train=to_categorical(Y,num_classes=num_classes)
-#     label_test=to_categorical(Y_test,num_classes=num_classes)
-#     saliency_model.compile(loss='categorical_crossentropy', optimizer='adam',metrics=['accuracy'])
+if type == 'discrete':
+    train_data = np.asarray(train_data)
+    train_labels = np.asarray(train_labels)
+    train_labels = to_categorical(train_labels, num_classes=num_classes)
+    # seppoint = int(0.9 * np.shape(train_data)[0])
+    # train_data = np.asarray(train_data)
+    # X=train_data[:seppoint]
+    # X_test=train_data[seppoint:]
+    # Y=saliencyValues[:seppoint]
+    # Y_test = saliencyValues[seppoint:]
+    # data_train= X
+    # data_test = X_test
+    # label_train=to_categorical(Y,num_classes=num_classes)
+    # label_test=to_categorical(Y_test,num_classes=num_classes)
+    saliency_model.compile(loss='categorical_crossentropy', optimizer='adam',metrics=['accuracy'])
 
 print(train_data.shape, train_labels.shape)
 
 saliency_model.summary()
-saliency_model_train = saliency_model.fit(x=train_data, y=train_labels, batch_size=batch_size, epochs=numEpochs, verbose=1)
+saliency_model_train = saliency_model.fit(x=train_data, y=train_labels, batch_size=batch_size, epochs=80, verbose=1)
 saliency_model.save( rootdir+sessionsDir +'model.h5')

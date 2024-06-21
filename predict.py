@@ -3,8 +3,8 @@ from definitions import *
 from configTrainSaliency01CNN import *
 import trimesh
 
-mesh_name = "data/bimba_decimated.obj"
-saliency_model = tf.keras.models.load_model("models/model-20.h5")
+mesh_name = "data/gargoyle_decimated.obj"
+saliency_model = tf.keras.models.load_model("models/model-40.h5")
 mModel = loadObj(mesh_name)
 updateGeometryAttibutes(mModel, useGuided=useGuided, numOfFacesForGuided=patchSizeGuided, computeDeltas=False,
                         computeAdjacency=False, computeVertexNormals=False)
@@ -35,6 +35,6 @@ print(train_data.shape)
 predictions = saliency_model.predict(train_data)
 
 mesh = trimesh.load(mesh_name)
-mesh.visual.face_colors = trimesh.visual.interpolate(predictions, color_map='viridis')
+mesh.visual.face_colors = trimesh.visual.interpolate(predictions, color_map='jet')
 mesh.show()
 
