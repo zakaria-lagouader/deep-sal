@@ -92,7 +92,7 @@ print(train_data.shape, train_labels.shape)
 # load model
 # saliency_model = tf.keras.models.load_model(rootdir+sessionsDir+'model-d-20.h5')
 
-seppoint = int(0.9 * train_data.shape[0])
+seppoint = int(0.8 * train_data.shape[0])
 saliency_model.summary()
 saliency_model_train = saliency_model.fit(x=train_data[:seppoint], y=train_labels[:seppoint], batch_size=batch_size, epochs=80, verbose=1)
 saliency_model.save( rootdir+sessionsDir +'model-new-20.h5')
