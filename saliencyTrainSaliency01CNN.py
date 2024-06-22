@@ -6,7 +6,9 @@ import os
 saliency_model=CNNmodelKeras(img_size,num_channels,num_classes,type)
 train_data=[]
 train_labels=[]
-trainSet = [os.path.splitext(os.path.basename(file))[0] for file in glob.glob(rootdir + modelsDir + "*.obj")].sort()[:20]
+trainSet = [os.path.splitext(os.path.basename(file))[0] for file in glob.glob(rootdir + modelsDir + "*.obj")]
+trainSet.sort()
+trainSet = trainSet[:20]
 print(trainSet)
 for modelName in trainSet:
     # ======Model information=====================================================================
