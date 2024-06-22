@@ -1,15 +1,13 @@
 import tensorflow as tf
 from definitions import *
 from configTrainSaliency01CNN import *
-# from nets import CNNmodelKeras
+from nets import CNNmodelKeras
 import glob
 import os
-# saliency_model=CNNmodelKeras(img_size,num_channels,num_classes,type)
+saliency_model=CNNmodelKeras(img_size,num_channels,num_classes,type)
 train_data=[]
 train_labels=[]
-trainSet = [os.path.splitext(os.path.basename(file))[0] for file in glob.glob(rootdir + modelsDir + "*.obj")]
-trainSet.sort()
-trainSet = trainSet[20:40]
+trainSet = sorted([os.path.splitext(os.path.basename(file))[0] for file in glob.glob(rootdir + modelsDir + "*.obj")])[:30]
 print(trainSet)
 for modelName in trainSet:
     # ======Model information=====================================================================
@@ -45,11 +43,7 @@ for modelName in trainSet:
             patchFacesOriginal = [mModel.faces[i] for i in p]
             positionsPatchFacesOriginal=np.asarray([pF.centroid for pF in patchFacesOriginal])
             normalsPatchFacesOriginal = np.asarray([pF.faceNormal for pF in patchFacesOriginal])
-            # vec = np.mean(np.asarray(
-            #         [fnm.faceNormal for fnm in [mModel.faces[j] for j in neighboursByFace(mModel, i, 4)[0]]]
-            #     ), axis=0)
             vec = np.mean(np.asarray([fnm.area * fnm.faceNormal for fnm in patchFacesOriginal]), axis=0)
-            # vec = mModel.faces[i].faceNormal
             vec = vec / np.linalg.norm(vec)
             axis, theta = computeRotation(vec, target)
             normalsPatchFacesOriginal = rotatePatch(normalsPatchFacesOriginal, axis, theta)
@@ -81,41 +75,29 @@ for modelName in trainSet:
             train_data.append((normalsPatchVerticesOriginalR + 1.0 * np.ones(np.shape(normalsPatchVerticesOriginalR))) / 2.0)
 
 # Dataset and labels summarization ========================================================================
-# if type == 'continuous':
-#     train_data = np.asarray(train_data)
-#     train_labels = np.asarray(train_labels)
-    # seppoint = int(0.9 * np.shape(train_data)[0])
-    # X=train_data[:seppoint]
-    # X_test=train_data[seppoint:]
-    # Y=np.asarray(train_labels[:seppoint])
-    # Y_test = np.asarray(train_labels[seppoint:])
-    # data_train= X
-    # data_test = X_test
-    # label_train=Y
-    # label_test=Y_test
-    # saliency_model.compile(loss=tf.keras.losses.MeanSquaredError(), optimizer='adam', metrics=[tf.keras.metrics.RootMeanSquaredError()])
+if type == 'continuous':
+    train_data = np.asarray(train_data)
+    train_labels = np.asarray(train_labels)
+    saliency_model.compile(loss=tf.keras.losses.MeanSquaredError(), optimizer='adam', metrics=[tf.keras.metrics.RootMeanSquaredError()])
 
-# load model
-saliency_model = tf.keras.models.load_model(rootdir+sessionsDir+'model-d-20.h5')
 
 if type == 'discrete':
     train_data = np.asarray(train_data)
     train_labels = np.asarray(train_labels)
     train_labels = to_categorical(train_labels, num_classes=num_classes)
-    # seppoint = int(0.9 * np.shape(train_data)[0])
-    # train_data = np.asarray(train_data)
-    # X=train_data[:seppoint]
-    # X_test=train_data[seppoint:]
-    # Y=saliencyValues[:seppoint]
-    # Y_test = saliencyValues[seppoint:]
-    # data_train= X
-    # data_test = X_test
-    # label_train=to_categorical(Y,num_classes=num_classes)
-    # label_test=to_categorical(Y_test,num_classes=num_classes)
     saliency_model.compile(loss='categorical_crossentropy', optimizer='adam',metrics=['accuracy'])
 
 print(train_data.shape, train_labels.shape)
 
+# load model
+# saliency_model = tf.keras.models.load_model(rootdir+sessionsDir+'model-d-20.h5')
+
+seppoint = int(0.9 * train_data.shape[0])
 saliency_model.summary()
-saliency_model_train = saliency_model.fit(x=train_data, y=train_labels, batch_size=batch_size, epochs=80, verbose=1)
-saliency_model.save( rootdir+sessionsDir +'model-d-40.h5')
+saliency_model_train = saliency_model.fit(x=train_data[:seppoint], y=train_labels[:seppoint], batch_size=batch_size, epochs=80, verbose=1)
+saliency_model.save( rootdir+sessionsDir +'model-new-20.h5')
+
+# Model evaluation ========================================================================
+loss, acc = saliency_model.evaluate(train_data[seppoint:], train_labels[seppoint:], verbose=0)
+print('Test loss:', loss)
+print('Test accuracy:', acc)

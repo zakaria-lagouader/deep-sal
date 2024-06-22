@@ -69,7 +69,6 @@ def create_fc_layer(input,
         layer = tf.nn.relu(layer)
     return layer
 
-
 def CNNmodelKeras(img_size, num_channels, num_classes, type):
     # Architecture =================================================================================
     filter_size_conv1 = 3
@@ -80,34 +79,46 @@ def CNNmodelKeras(img_size, num_channels, num_classes, type):
     num_filters_conv3 = 128
     filter_size_conv4 = 3
     num_filters_conv4 = 256
-    fc_layer_size = 128
+    fc_layer_size = 256
+
+    dropout_rate = 0.2
+
     inputs = Input(shape=(img_size, img_size, num_channels))
-    x = Conv2D(num_filters_conv1, kernel_size=(filter_size_conv1, filter_size_conv1), strides=(1, 1), padding='same')(
-        inputs)
+    x = Conv2D(num_filters_conv1, kernel_size=(filter_size_conv1, filter_size_conv1), strides=(1, 1), padding='same')(inputs)
     x = ReLU()(x)
     x = MaxPooling2D((2, 2), strides=(2, 2), padding='valid')(x)
+    x = Dropout(dropout_rate)(x)  # Added dropout after the first max pooling layer
+
     x = Conv2D(num_filters_conv2, kernel_size=(filter_size_conv2, filter_size_conv2), strides=(1, 1), padding='same')(x)
     x = ReLU()(x)
-    x = Flatten()(x)
+    x = MaxPooling2D((2, 2), strides=(2, 2), padding='valid')(x)
+    x = Dropout(dropout_rate)(x)  # Added dropout after the second max pooling layer
 
-    print(type)
+    x = Conv2D(num_filters_conv3, kernel_size=(filter_size_conv3, filter_size_conv3), strides=(1, 1), padding='same')(x)
+    x = ReLU()(x)
+    x = MaxPooling2D((2, 2), strides=(2, 2), padding='valid')(x)
+    x = Dropout(dropout_rate)(x)  # Added dropout after the third max pooling layer
+
+    x = Flatten()(x)
 
     if type == 'discrete':
         x = Dense(fc_layer_size)(x)
         x = ReLU()(x)
+        x = Dropout(dropout_rate)(x)  # Added dropout after the first fully connected layer
         x = Dense(fc_layer_size)(x)
         x = ReLU()(x)
+        x = Dropout(dropout_rate)(x)  # Added dropout after the second fully connected layer
         x = Dense(num_classes)(x)
-        x = predictions = Softmax()(x)
+        x = Softmax()(x)
 
     if type == 'continuous':
         x = Dense(fc_layer_size)(x)
         x = ReLU()(x)
+        x = Dropout(dropout_rate)(x)  # Added dropout after the first fully connected layer
         x = Dense(1)(x)
 
     saliency_model = Model(inputs=inputs, outputs=x)
     return saliency_model
-
 
 def CNNDeepmodelKeras(img_size, num_channels, num_classes, type):
     # Architecture =================================================================================
