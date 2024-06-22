@@ -96,7 +96,6 @@ def CNNmodelKeras(img_size, num_channels, num_classes, type):
 
     x = Conv2D(num_filters_conv3, kernel_size=(filter_size_conv3, filter_size_conv3), strides=(1, 1), padding='same')(x)
     x = ReLU()(x)
-    x = MaxPooling2D((2, 2), strides=(2, 2), padding='valid')(x)
     x = Dropout(dropout_rate)(x)  # Added dropout after the third max pooling layer
 
     x = Flatten()(x)
