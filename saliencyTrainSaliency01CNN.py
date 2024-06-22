@@ -1,14 +1,15 @@
+import tensorflow as tf
 from definitions import *
 from configTrainSaliency01CNN import *
-from nets import CNNmodelKeras
+# from nets import CNNmodelKeras
 import glob
 import os
-saliency_model=CNNmodelKeras(img_size,num_channels,num_classes,type)
+# saliency_model=CNNmodelKeras(img_size,num_channels,num_classes,type)
 train_data=[]
 train_labels=[]
 trainSet = [os.path.splitext(os.path.basename(file))[0] for file in glob.glob(rootdir + modelsDir + "*.obj")]
 trainSet.sort()
-trainSet = trainSet[:20]
+trainSet = trainSet[20:40]
 print(trainSet)
 for modelName in trainSet:
     # ======Model information=====================================================================
@@ -80,9 +81,9 @@ for modelName in trainSet:
             train_data.append((normalsPatchVerticesOriginalR + 1.0 * np.ones(np.shape(normalsPatchVerticesOriginalR))) / 2.0)
 
 # Dataset and labels summarization ========================================================================
-if type == 'continuous':
-    train_data = np.asarray(train_data)
-    train_labels = np.asarray(train_labels)
+# if type == 'continuous':
+#     train_data = np.asarray(train_data)
+#     train_labels = np.asarray(train_labels)
     # seppoint = int(0.9 * np.shape(train_data)[0])
     # X=train_data[:seppoint]
     # X_test=train_data[seppoint:]
@@ -92,7 +93,10 @@ if type == 'continuous':
     # data_test = X_test
     # label_train=Y
     # label_test=Y_test
-    saliency_model.compile(loss=tf.keras.losses.MeanSquaredError(), optimizer='adam', metrics=[tf.keras.metrics.RootMeanSquaredError()])
+    # saliency_model.compile(loss=tf.keras.losses.MeanSquaredError(), optimizer='adam', metrics=[tf.keras.metrics.RootMeanSquaredError()])
+
+# load model
+saliency_model = tf.keras.models.load_model(rootdir+sessionsDir+'model-d-20.h5')
 
 if type == 'discrete':
     train_data = np.asarray(train_data)
@@ -114,4 +118,4 @@ print(train_data.shape, train_labels.shape)
 
 saliency_model.summary()
 saliency_model_train = saliency_model.fit(x=train_data, y=train_labels, batch_size=batch_size, epochs=80, verbose=1)
-saliency_model.save( rootdir+sessionsDir +'model.h5')
+saliency_model.save( rootdir+sessionsDir +'model-d-40.h5')

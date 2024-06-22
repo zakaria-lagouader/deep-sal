@@ -3,8 +3,9 @@ from definitions import *
 from configTrainSaliency01CNN import *
 import trimesh
 
-mesh_name = "data/bimba_decimated.obj"
-saliency_model = tf.keras.models.load_model("models/model.h5")
+type = "continuous"
+mesh_name = "data/gargoyle_decimated.obj"
+saliency_model = tf.keras.models.load_model("models/model-40.h5")
 mModel = loadObj(mesh_name)
 updateGeometryAttibutes(mModel, useGuided=useGuided, numOfFacesForGuided=patchSizeGuided, computeDeltas=False,
                         computeAdjacency=False, computeVertexNormals=False)
