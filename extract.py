@@ -25,9 +25,9 @@ def process_mesh(file_name):
                                                                         HC2I[I2HC[hci, 0], I2HC[hci, 1]]]
         train_data.append((normalsPatchFacesOriginalR + 1.0 * np.ones(np.shape(normalsPatchFacesOriginalR))) / 2.0)
 
-    np.save(f"cached/{os.path.basename(file_name)}.npy", np.asarray(train_data))
+    np.save(f"cached/{os.path.basename(file_name).replace('.obj', '')}.npy", np.asarray(train_data, dtype=np.float32))
     print(f"saved to cached/{os.path.basename(file_name)}.npy")
 
 if __name__ == "__main__":  
     with Pool(8) as p:
-        p.map(process_mesh, sorted(glob.glob(f"data2/*.obj"))[:50])
+        p.map(process_mesh, sorted(glob.glob(f"data-1/*.obj")))

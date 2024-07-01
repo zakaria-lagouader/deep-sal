@@ -4,8 +4,8 @@ from configTrainSaliency01CNN import *
 import trimesh
 
 type = "continuous"
-mesh_name = "data/cow_decimated.obj"
-saliency_model = tf.keras.models.load_model("models/saliency_model.h5")
+mesh_name = "data/skull_decimated.obj"
+saliency_model = tf.keras.models.load_model("models/saliency_model-f32.h5")
 mModel = loadObj(mesh_name)
 updateGeometryAttibutes(mModel, useGuided=useGuided, numOfFacesForGuided=patchSizeGuided, computeDeltas=False,
                         computeAdjacency=False, computeVertexNormals=False)
@@ -31,6 +31,7 @@ for i, p in enumerate(patches):
     train_data.append((normalsPatchFacesOriginalR + 1.0 * np.ones(np.shape(normalsPatchFacesOriginalR))) / 2.0)
 
 train_data = np.asarray(train_data)
+train_data = (train_data - np.mean(train_data, axis=0)) / np.std(train_data, axis=0)
 predictions = saliency_model.predict(train_data)
 
 if type == "discrete":
