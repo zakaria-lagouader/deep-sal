@@ -4,8 +4,8 @@ from configTrainSaliency01CNN import *
 import trimesh
 
 type = "continuous"
-mesh_name = "data-1/armadillo_decimated.obj"
-saliency_model = tf.keras.models.load_model("models/saliency_model-f32-not-normalized.h5")
+mesh_name = "woman_decimated.obj"
+saliency_model = tf.keras.models.load_model("models/saliency_model-f32-sigmoid-reg-40.h5")
 mModel = loadObj(mesh_name)
 updateGeometryAttibutes(mModel, useGuided=useGuided, numOfFacesForGuided=patchSizeGuided, computeDeltas=False,
                         computeAdjacency=False, computeVertexNormals=False)
