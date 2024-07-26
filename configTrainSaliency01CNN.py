@@ -7,7 +7,7 @@ modelsDir='data/'
 sessionsDir='models/'
 
 
-patchSide=128
+patchSide=64
 numEpochs=40
 numOfElements = patchSide * patchSide
 numberOfClasses=20
