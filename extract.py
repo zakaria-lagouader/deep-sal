@@ -49,6 +49,6 @@ def process_mesh(file_name):
     print(f"Saved to {output_file}")
 
 if __name__ == "__main__":
-    obj_files = sorted(glob.glob("data-1/*.obj"))[:1]
-    with Pool(os.cpu_count()) as p:
+    obj_files = sorted(glob.glob("data-1/*.obj"))
+    with Pool(8) as p:
         p.map(process_mesh, obj_files)
