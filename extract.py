@@ -5,6 +5,7 @@ import os
 import glob
 from concurrent.futures import ProcessPoolExecutor
 import numba
+import traceback
 
 @numba.jit(nopython=True)
 def process_patch(patch_faces, I2HC, HC2I):
@@ -24,30 +25,40 @@ def process_patch(patch_faces, I2HC, HC2I):
     return np.linalg.norm((normals_reshaped + 1) / 2, axis=2)
 
 def process_mesh(file_name):
-    print(f"processing {file_name}")
-    mModel = loadObj(file_name)
+    try:
+        print(f"Processing {file_name}")
+        mModel = loadObj(file_name)
 
-    updateGeometryAttibutes(
-        mModel, 
-        useGuided=useGuided, 
-        numOfFacesForGuided=patchSizeGuided, 
-        computeDeltas=False,
-        computeAdjacency=False, 
-        computeVertexNormals=False
-    )
+        updateGeometryAttibutes(
+            mModel, 
+            useGuided=useGuided, 
+            numOfFacesForGuided=patchSizeGuided, 
+            computeDeltas=False,
+            computeAdjacency=False, 
+            computeVertexNormals=False
+        )
 
-    patches = [neighboursByFace(mModel, i, numOfElements)[0] for i in range(len(mModel.faces))]
+        patches = [neighboursByFace(mModel, i, numOfElements)[0] for i in range(len(mModel.faces))]
 
-    train_data = []
-    for patch in patches:
-        patch_faces = [mModel.faces[j] for j in patch]
-        train_data.append(process_patch(patch_faces, I2HC, HC2I))
+        train_data = []
+        for patch in patches:
+            patch_faces = [mModel.faces[j] for j in patch]
+            train_data.append(process_patch(patch_faces, I2HC, HC2I))
 
-    output_file = f"data-3/{os.path.basename(file_name).replace('.obj', '')}.npy"
-    np.save(output_file, np.asarray(train_data, dtype=np.float32))
-    print(f"saved to {output_file}")
+        train_data_array = np.asarray(train_data, dtype=np.float32)
+        
+        output_file = f"data-3/{os.path.basename(file_name).replace('.obj', '')}.npy"
+        os.makedirs(os.path.dirname(output_file), exist_ok=True)
+        np.save(output_file, train_data_array)
+        print(f"Saved to {output_file}")
+        return f"Successfully processed and saved {file_name}"
+    except Exception as e:
+        return f"Error processing {file_name}: {str(e)}\n{traceback.format_exc()}"
 
 if __name__ == "__main__":
     files = sorted(glob.glob("data-1/*.obj"))
     with ProcessPoolExecutor(max_workers=os.cpu_count()) as executor:
-        executor.map(process_mesh, files)
+        results = list(executor.map(process_mesh, files))
+    
+    for result in results:
+        print(result)
