@@ -43,7 +43,7 @@ def process_mesh(file_name):
         normals_reshaped = np.linalg.norm(normals_reshaped, axis=3)
         train_data.append(normals_reshaped)
 
-    np.save(f"cached/data-3/{os.path.basename(file_name).replace('.obj', '')}.npy", np.asarray(train_data, dtype=np.float32))
+    np.save(f"data-3/{os.path.basename(file_name).replace('.obj', '')}.npy", np.asarray(train_data, dtype=np.float32))
     print(f"saved to cached/{os.path.basename(file_name)}.npy")
 
 if __name__ == "__main__":  
