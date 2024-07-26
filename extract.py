@@ -56,7 +56,7 @@ def process_mesh(file_name):
         return f"Error processing {file_name}: {str(e)}\n{traceback.format_exc()}"
 
 if __name__ == "__main__":
-    files = sorted(glob.glob("data-1/*.obj"))
+    files = sorted(glob.glob("data-1/*.obj"))[:2]
     with ProcessPoolExecutor(max_workers=os.cpu_count()) as executor:
         results = list(executor.map(process_mesh, files))
     
