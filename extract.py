@@ -38,7 +38,7 @@ def process_mesh(file_name):
         # Apply I2HC and HC2I transformations
         for hci in range(I2HC.shape[0]):
             i, j = I2HC[hci]
-            normals_reshaped[i, j, :] = normals[HC2I[i, j]]
+            normals_reshaped[i, j, :] = normals[:, HC2I[i, j]]
         
         # Normalize the data
         train_data[idx] = (normals_reshaped + 1) / 2
