@@ -39,9 +39,7 @@ def process_mesh(file_name):
             normals_reshaped[i, j, :] = normals[:, HC2I[i, j]]
         
         # Normalize the data
-        normals_reshaped = (normals_reshaped + 1) / 2
-        normals_reshaped = np.linalg.norm(normals_reshaped, axis=3)
-        train_data.append(normals_reshaped)
+        train_data.append(np.linalg.norm((normals_reshaped + 1) / 2, axis=3))
 
     np.save(f"data-3/{os.path.basename(file_name).replace('.obj', '')}.npy", np.asarray(train_data, dtype=np.float32))
     print(f"saved to cached/{os.path.basename(file_name)}.npy")
