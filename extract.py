@@ -5,6 +5,7 @@ import os
 
 
 def process_mesh(file_name):
+    print(f"processing {file_name}")
     mModel = loadObj(file_name)
 
     updateGeometryAttibutes(

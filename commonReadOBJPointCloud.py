@@ -173,7 +173,7 @@ def loadObj(filename):
         flines = f.readlines()
         # Read vertices
         indexCounter = 0;
-        print('Reading Vertices')
+        # print('Reading Vertices')
         for row in flines:
             if row[0] == 'v' and row[1] == ' ':
                 line = row.rstrip()
@@ -196,8 +196,8 @@ def loadObj(filename):
                 indexCounter += 1;
                 vertices.append(v)
         # Read Faces
-        indexCounter = 0;
-        print('Reading Faces')
+        indexCounter = 0
+        # print('Reading Faces')
         for row in flines:
             if row[0] == 'f':
                 line = row.rstrip()
@@ -228,7 +228,7 @@ def loadObj(filename):
                 faces.append(f)
 
         # Which vertices are neighbouring to each vertex
-        print('Which vertices are neighbouring to each vertex')
+        # print('Which vertices are neighbouring to each vertex')
         for idx_f, f in enumerate(faces):
             v0 = f.verticesIndices[0]
             v1 = f.verticesIndices[1]
@@ -247,12 +247,12 @@ def loadObj(filename):
                 vertices[v2].neighbouringVerticesIndices.append(v1)
 
         # Which faces are neighbouring to each vertex
-        print('Which faces are neighbouring to each vertex')
+        # print('Which faces are neighbouring to each vertex')
         for idx_f, f in enumerate(faces):
             for idx_v, v in enumerate(f.verticesIndices):
                 vertices[v].neighbouringFaceIndices.append(f.index)
 
-        print('Which faces are neighbouring to each face')
+        # print('Which faces are neighbouring to each face')
         for idx_v, v in enumerate(vertices):
             for idx_f in v.neighbouringFaceIndices:
                 for jdx_f in v.neighbouringFaceIndices:
@@ -297,7 +297,7 @@ def loadObj(filename):
             for fsi in fs:
                 faces[fsi].edgeIndices.append(idx_e)
 
-        print('Compute 64 neighbs')
+        # print('Compute 64 neighbs')
         for idx_f, fi in enumerate(faces):
             patchFaces = [idx_f]
             crosschecklist = set()
@@ -636,19 +636,19 @@ def updateGeometryConnectivity(Geom):
 
 def updateGeometryAttibutes(Geom, useGuided=False, numOfFacesForGuided=10, computeDeltas=False, computeAdjacency=False,
                             computeVertexNormals=True):
-    print('Updating geometry attributes')
+    # print('Updating geometry attributes')
     ## Positioning & orientation
-    print('Get vertex objects for each face')
+    # print('Get vertex objects for each face')
     for idx_f, f in enumerate(Geom.faces):
         v = [Geom.vertices[fvi] for fvi in Geom.faces[idx_f].verticesIndices]
         Geom.faces[idx_f] = Geom.faces[idx_f]._replace(vertices=v)
-    print('Compute centroids')
+    # print('Compute centroids')
     for idx_f, f in enumerate(Geom.faces):
         vPos = [Geom.vertices[i].position for i in Geom.faces[idx_f].verticesIndices]
         vPos = np.asarray(vPos)
         centroid = np.mean(vPos, axis=0)
         Geom.faces[idx_f] = Geom.faces[idx_f]._replace(centroid=centroid)
-    print('Process centroids and normals per face')
+    # print('Process centroids and normals per face')
     for idx_f, f in enumerate(Geom.faces):
         bc = Geom.faces[idx_f].vertices[1].position - Geom.faces[idx_f].vertices[2].position
         ba = Geom.faces[idx_f].vertices[0].position - Geom.faces[idx_f].vertices[2].position
@@ -667,7 +667,7 @@ def updateGeometryAttibutes(Geom, useGuided=False, numOfFacesForGuided=10, compu
             print('Warning')
 
     if computeVertexNormals:
-        print('Process normals per vertex')
+        # print('Process normals per vertex')
         for idx_v, v in enumerate(Geom.vertices):
             normal = np.asarray([0.0, 0.0, 0.0])
             for idx_f, f in enumerate(Geom.vertices[idx_v].neighbouringFaceIndices):
@@ -679,7 +679,7 @@ def updateGeometryAttibutes(Geom, useGuided=False, numOfFacesForGuided=10, compu
             Geom.vertices[idx_v].normal[2] = normal[2]
 
     if useGuided:
-        print('Process guided')
+        # print('Process guided')
         numOfFaces_ = numOfFacesForGuided
         patches = []
         for i in range(0, len(Geom.faces)):
@@ -716,7 +716,7 @@ def updateGeometryAttibutes(Geom, useGuided=False, numOfFacesForGuided=10, compu
             Geom.faces[f.index] = Geom.faces[f.index]._replace(guidedNormal=weightedNormal)
 
     if computeDeltas:
-        print("Compute deltas")
+        # print("Compute deltas")
         for idx_v, v in enumerate(Geom.vertices):
             neibs = Geom.vertices[idx_v].neighbouringVerticesIndices
             vPos = np.asarray([Geom.vertices[i].position for i in neibs])
