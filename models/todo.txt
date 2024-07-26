@@ -1,0 +1,7 @@
+tests:
+- test epochs: start with 150
+- test weight initialisation: glorot
+- test original layer of the paper (without dropout + l2)
+- check kfold + test and validation sets
+- chech if patches are intersecting 
+- visualize the  patches using matplot lib
