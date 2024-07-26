@@ -45,5 +45,5 @@ def process_mesh(file_name):
     print(f"saved to cached/{os.path.basename(file_name)}.npy")
 
 if __name__ == "__main__":  
-    with Pool(8) as p:
+    with Pool(6) as p:
         p.map(process_mesh, sorted(glob.glob("data-1/*.obj")))
