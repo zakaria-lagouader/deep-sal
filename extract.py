@@ -23,6 +23,9 @@ def process_mesh(file_name):
     train_data = np.empty((num_faces, patchSide, patchSide, 3), dtype=np.float32)
 
     for idx, patch in enumerate(patches):
+        if idx % 2000 == 0:
+            print(f"{file_name}: {idx / 200}%")
+        
         patch_faces = [mModel.faces[j] for j in patch]
         normals = np.array([face.faceNormal for face in patch_faces])
         
@@ -32,10 +35,8 @@ def process_mesh(file_name):
         axis, theta = computeRotation(vec, target)
         normals = rotatePatch(normals, axis, theta)
         
-        # Reshape normals
-        normals_reshaped = normals.reshape((patchSide, patchSide, 3))
-        
-        # Apply I2HC and HC2I transformations
+        # Reshape normals and apply transformations
+        normals_reshaped = np.zeros((patchSide, patchSide, 3), dtype=np.float32)
         for hci in range(I2HC.shape[0]):
             i, j = I2HC[hci]
             normals_reshaped[i, j, :] = normals[:, HC2I[i, j]]
@@ -49,6 +50,6 @@ def process_mesh(file_name):
     print(f"Saved to {output_file}")
 
 if __name__ == "__main__":
-    obj_files = sorted(glob.glob("data-1/*.obj"))
-    with Pool(8) as p:
+    obj_files = sorted(glob.glob("data-1/*.obj"))[20:40]
+    with Pool(os.cpu_count()) as p:
         p.map(process_mesh, obj_files)
