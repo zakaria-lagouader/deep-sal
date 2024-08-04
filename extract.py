@@ -46,7 +46,7 @@ def process_mesh(file_name):
 
     # Save the result
     output_file = f"data-3/{os.path.basename(file_name).replace('.obj', '')}.npy"
-    np.save(output_file, np.linalg.norm(train_data, axis=3))
+    np.save(output_file, train_data)
     print(f"Saved to {output_file}")
 
 if __name__ == "__main__":
